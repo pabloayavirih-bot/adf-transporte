@@ -1,0 +1,65 @@
+{
+	"name": "DW_Silver_Paradas_SQL",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL_DW_Transporte",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Silver"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SilverId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "ParadaHistoricaId",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CodigoPublicado",
+				"type": "nvarchar"
+			},
+			{
+				"name": "NombreParada",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Zona",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Latitud",
+				"type": "decimal",
+				"precision": 9,
+				"scale": 6
+			},
+			{
+				"name": "Longitud",
+				"type": "decimal",
+				"precision": 9,
+				"scale": 6
+			},
+			{
+				"name": "VigenciaDesde",
+				"type": "date"
+			},
+			{
+				"name": "VigenciaHasta",
+				"type": "date"
+			},
+			{
+				"name": "Estado",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "silver",
+			"table": "Paradas"
+		}
+	}
+}
