@@ -1,0 +1,54 @@
+{
+	"name": "Bronze_Vehiculos_XLS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_Transporte",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Bronze/xls"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Vehiculos",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "operacion_2022.xlsx",
+				"folderPath": "datos_xls",
+				"fileSystem": "raw"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "cod_ruta",
+				"type": "String"
+			},
+			{
+				"name": "nombre_ruta",
+				"type": "String"
+			},
+			{
+				"name": "origen",
+				"type": "String"
+			},
+			{
+				"name": "destino",
+				"type": "String"
+			},
+			{
+				"name": "fecha_desde",
+				"type": "String"
+			},
+			{
+				"name": "fecha_hasta",
+				"type": "String"
+			},
+			{
+				"name": "estado",
+				"type": "String"
+			}
+		]
+	}
+}
