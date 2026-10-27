@@ -1,0 +1,216 @@
+{
+	"name": "DF_Bronze_Incidentes",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Bronze_Incidentes_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "Bronze_Incidentes_XLS",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				},
+				{
+					"dataset": {
+						"referenceName": "Bronze_Incidentes_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "source3"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DW_Bronze_Incidentes_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "select4"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "union1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id_incidente as string,",
+				"          tipo as string,",
+				"          severidad as string,",
+				"          fecha_inicio as string,",
+				"          hora_inicio as string,",
+				"          fecha_fin as string,",
+				"          hora_fin as string,",
+				"          fecha_registro as string,",
+				"          rutas_afectadas as string,",
+				"          vehiculo_afectado as string,",
+				"          descripcion as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source(output(",
+				"          id_incidente as string,",
+				"          tipo as string,",
+				"          severidad as string,",
+				"          fecha_inicio as string,",
+				"          hora_inicio as string,",
+				"          fecha_fin as string,",
+				"          hora_fin as string,",
+				"          fecha_registro as string,",
+				"          rutas_afectadas as string,",
+				"          vehiculo_afectado as string,",
+				"          descripcion as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source2",
+				"source(output(",
+				"          AnioFuente as integer,",
+				"          IncidenteId as string,",
+				"          TipoIncidente as string,",
+				"          Severidad as string,",
+				"          FechaHoraInicio as timestamp,",
+				"          FechaHoraFin as timestamp,",
+				"          FechaHoraRegistro as timestamp,",
+				"          VehiculoId as string,",
+				"          Descripcion as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source3",
+				"source1 select(mapColumn(",
+				"          IncidenteId = id_incidente,",
+				"          TipoIncidente = tipo,",
+				"          Severidad = severidad,",
+				"          fecha_inicio,",
+				"          hora_inicio,",
+				"          fecha_fin,",
+				"          hora_fin,",
+				"          fecha_registro,",
+				"          rutas_afectadas,",
+				"          VehiculoId = vehiculo_afectado,",
+				"          Descripcion = descripcion",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 derive(AnioFuente = substring(fecha_inicio, 7, 4),",
+				"          {FechaHoraInicio } = concat(fecha_inicio, ' ', hora_inicio),",
+				"          FechaHoraFin = concat(fecha_fin, ' ', hora_fin),",
+				"          FechaHoraRegistro = fecha_registro) ~> derivedColumn1",
+				"derivedColumn1 select(mapColumn(",
+				"          IncidenteId,",
+				"          TipoIncidente,",
+				"          Severidad,",
+				"          VehiculoId,",
+				"          Descripcion,",
+				"          AnioFuente,",
+				"          {FechaHoraInicio },",
+				"          FechaHoraFin,",
+				"          FechaHoraRegistro",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"source2 select(mapColumn(",
+				"          IncidenteId = id_incidente,",
+				"          TipoIncidente = tipo,",
+				"          Severidad = severidad,",
+				"          fecha_inicio,",
+				"          hora_inicio,",
+				"          fecha_fin,",
+				"          hora_fin,",
+				"          fecha_registro,",
+				"          rutas_afectadas,",
+				"          VehiculoId = vehiculo_afectado,",
+				"          Descripcion = descripcion",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"select3 derive(AnioFuente = '2022',",
+				"          FechaHoraInicio = concat(fecha_inicio, ' ', hora_inicio),",
+				"          FechaHoraFin = concat(fecha_fin, ' ', hora_fin),",
+				"          FechaHoraRegistro = fecha_registro) ~> derivedColumn2",
+				"derivedColumn2 select(mapColumn(",
+				"          IncidenteId,",
+				"          TipoIncidente,",
+				"          Severidad,",
+				"          VehiculoId,",
+				"          Descripcion,",
+				"          AnioFuente,",
+				"          FechaHoraInicio,",
+				"          FechaHoraFin,",
+				"          FechaHoraRegistro",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select4",
+				"source3 derive(AnioFuente = toString(AnioFuente),",
+				"          FechaHoraInicio = toString(FechaHoraInicio),",
+				"          FechaHoraFin = toString(FechaHoraFin),",
+				"          FechaHoraRegistro = toString(FechaHoraRegistro)) ~> derivedColumn3",
+				"derivedColumn3, select4, select2 union(byName: true)~> union1",
+				"union1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          AnioFuente as string,",
+				"          IncidenteId as string,",
+				"          TipoIncidente as string,",
+				"          Severidad as string,",
+				"          FechaHoraInicio as string,",
+				"          FechaHoraFin as string,",
+				"          FechaHoraRegistro as string,",
+				"          VehiculoId as string,",
+				"          Descripcion as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          AnioFuente,",
+				"          IncidenteId,",
+				"          TipoIncidente,",
+				"          Severidad,",
+				"          FechaHoraInicio,",
+				"          FechaHoraFin,",
+				"          FechaHoraRegistro,",
+				"          VehiculoId,",
+				"          Descripcion",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
