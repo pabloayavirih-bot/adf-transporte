@@ -26,10 +26,27 @@
 					"name": "source1"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DW_Bronze_Paradas_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "select1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "union1"
 				}
 			],
 			"scriptLines": [
@@ -76,16 +93,57 @@
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> source1",
 				"srcParadasCSV select(mapColumn(",
-				"          cod_ruta,",
-				"          nombre_ruta,",
-				"          origen,",
-				"          destino,",
-				"          fecha_desde,",
-				"          fecha_hasta,",
-				"          estado",
+				"          CodigoPublicado = nro_parada,",
+				"          NombreParada = nombre_parada,",
+				"          Zona = zona,",
+				"          Latitud = latitud,",
+				"          Longitud = longitud,",
+				"          VigenciaDesde = fecha_desde,",
+				"          VigenciaHasta = fecha_hasta,",
+				"          Estado = estado",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1"
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"srcParadasXLS select(mapColumn(",
+				"          CodigoPublicado = nro_parada,",
+				"          NombreParada = nombre_parada,",
+				"          Zona = zona,",
+				"          Latitud = latitud,",
+				"          Longitud = longitud,",
+				"          VigenciaDesde = fecha_desde,",
+				"          VigenciaHasta = fecha_hasta,",
+				"          Estado = estado",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"source1 derive(AnioFuente = toString(AnioFuente),",
+				"          Latitud = toString(Latitud),",
+				"          Longitud = toString(Longitud),",
+				"          VigenciaDesde = toString(VigenciaDesde),",
+				"          VigenciaHasta = toString(VigenciaHasta)) ~> derivedColumn1",
+				"derivedColumn1, select1, select2 union(byName: true)~> union1",
+				"union1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          AnioFuente as string,",
+				"          ParadaHistoricaId as string,",
+				"          CodigoPublicado as string,",
+				"          NombreParada as string,",
+				"          Zona as string,",
+				"          Latitud as string,",
+				"          Longitud as string,",
+				"          VigenciaDesde as string,",
+				"          VigenciaHasta as string,",
+				"          Estado as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
 	}
