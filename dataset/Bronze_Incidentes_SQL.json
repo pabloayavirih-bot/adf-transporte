@@ -10,7 +10,48 @@
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": [],
+		"schema": [
+			{
+				"name": "AnioFuente",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "IncidenteId",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TipoIncidente",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Severidad",
+				"type": "nvarchar"
+			},
+			{
+				"name": "FechaHoraInicio",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "FechaHoraFin",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "FechaHoraRegistro",
+				"type": "datetime2",
+				"scale": 0
+			},
+			{
+				"name": "VehiculoId",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Descripcion",
+				"type": "nvarchar"
+			}
+		],
 		"typeProperties": {
 			"schema": "dbo",
 			"table": "IncidentesAzure"

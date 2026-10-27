@@ -10,7 +10,45 @@
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": [],
+		"schema": [
+			{
+				"name": "AnioFuente",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "RutaHistoricaId",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CodigoRuta",
+				"type": "nvarchar"
+			},
+			{
+				"name": "NombreRuta",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Origen",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Destino",
+				"type": "nvarchar"
+			},
+			{
+				"name": "VigenciaDesde",
+				"type": "date"
+			},
+			{
+				"name": "VigenciaHasta",
+				"type": "date"
+			},
+			{
+				"name": "Estado",
+				"type": "nvarchar"
+			}
+		],
 		"typeProperties": {
 			"schema": "dbo",
 			"table": "RutasAzure"

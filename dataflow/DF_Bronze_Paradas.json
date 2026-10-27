@@ -17,24 +17,28 @@
 						"type": "DatasetReference"
 					},
 					"name": "srcParadasXLS"
-				}
-			],
-			"sinks": [
+				},
 				{
 					"dataset": {
-						"referenceName": "DW_Bronze_Paradas_SQL",
+						"referenceName": "Bronze_Paradas_SQL",
 						"type": "DatasetReference"
 					},
-					"name": "sinkParadas"
+					"name": "source1"
 				}
 			],
-			"transformations": [],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "select1"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
-				"          cod_ruta as string,",
-				"          nombre_ruta as string,",
-				"          origen as string,",
-				"          destino as string,",
+				"          nro_parada as string,",
+				"          nombre_parada as string,",
+				"          zona as string,",
+				"          latitud as string,",
+				"          longitud as string,",
 				"          fecha_desde as string,",
 				"          fecha_hasta as string,",
 				"          estado as string",
@@ -43,10 +47,11 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> srcParadasCSV",
 				"source(output(",
-				"          cod_ruta as string,",
-				"          nombre_ruta as string,",
-				"          origen as string,",
-				"          destino as string,",
+				"          nro_parada as string,",
+				"          nombre_parada as string,",
+				"          zona as string,",
+				"          latitud as string,",
+				"          longitud as string,",
 				"          fecha_desde as string,",
 				"          fecha_hasta as string,",
 				"          estado as string",
@@ -54,16 +59,33 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> srcParadasXLS",
-				"srcParadasCSV sink(allowSchemaDrift: true,",
+				"source(output(",
+				"          AnioFuente as integer,",
+				"          ParadaHistoricaId as string,",
+				"          CodigoPublicado as string,",
+				"          NombreParada as string,",
+				"          Zona as string,",
+				"          Latitud as decimal(9,6),",
+				"          Longitud as decimal(9,6),",
+				"          VigenciaDesde as date,",
+				"          VigenciaHasta as date,",
+				"          Estado as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     deletable:false,",
-				"     insertable:true,",
-				"     updateable:false,",
-				"     upsertable:false,",
-				"     format: 'table',",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"srcParadasCSV select(mapColumn(",
+				"          cod_ruta,",
+				"          nombre_ruta,",
+				"          origen,",
+				"          destino,",
+				"          fecha_desde,",
+				"          fecha_hasta,",
+				"          estado",
+				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sinkParadas"
+				"     skipDuplicateMapOutputs: true) ~> select1"
 			]
 		}
 	}

@@ -24,19 +24,23 @@
 		},
 		"schema": [
 			{
-				"name": "cod_ruta",
+				"name": "nro_parada",
 				"type": "String"
 			},
 			{
-				"name": "nombre_ruta",
+				"name": "nombre_parada",
 				"type": "String"
 			},
 			{
-				"name": "origen",
+				"name": "zona",
 				"type": "String"
 			},
 			{
-				"name": "destino",
+				"name": "latitud",
+				"type": "String"
+			},
+			{
+				"name": "longitud",
 				"type": "String"
 			},
 			{

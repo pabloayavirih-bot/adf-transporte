@@ -10,7 +10,48 @@
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": [],
+		"schema": [
+			{
+				"name": "AnioFuente",
+				"type": "varchar"
+			},
+			{
+				"name": "DemandaId",
+				"type": "varchar"
+			},
+			{
+				"name": "FechaServicio",
+				"type": "varchar"
+			},
+			{
+				"name": "RutaHistoricaId",
+				"type": "varchar"
+			},
+			{
+				"name": "ParadaHistoricaId",
+				"type": "varchar"
+			},
+			{
+				"name": "Franja",
+				"type": "varchar"
+			},
+			{
+				"name": "ValidacionesTarjeta",
+				"type": "varchar"
+			},
+			{
+				"name": "Descensos",
+				"type": "varchar"
+			},
+			{
+				"name": "DemandaNoAtendida",
+				"type": "varchar"
+			},
+			{
+				"name": "Metodo",
+				"type": "varchar"
+			}
+		],
 		"typeProperties": {
 			"schema": "bronze",
 			"table": "DemandaParadasAzure"

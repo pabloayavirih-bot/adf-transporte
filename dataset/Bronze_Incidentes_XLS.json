@@ -22,31 +22,47 @@
 		},
 		"schema": [
 			{
-				"name": "cod_ruta",
+				"name": "id_incidente",
 				"type": "String"
 			},
 			{
-				"name": "nombre_ruta",
+				"name": "tipo",
 				"type": "String"
 			},
 			{
-				"name": "origen",
+				"name": "severidad",
 				"type": "String"
 			},
 			{
-				"name": "destino",
+				"name": "fecha_inicio",
 				"type": "String"
 			},
 			{
-				"name": "fecha_desde",
+				"name": "hora_inicio",
 				"type": "String"
 			},
 			{
-				"name": "fecha_hasta",
+				"name": "fecha_fin",
 				"type": "String"
 			},
 			{
-				"name": "estado",
+				"name": "hora_fin",
+				"type": "String"
+			},
+			{
+				"name": "fecha_registro",
+				"type": "String"
+			},
+			{
+				"name": "rutas_afectadas",
+				"type": "String"
+			},
+			{
+				"name": "vehiculo_afectado",
+				"type": "String"
+			},
+			{
+				"name": "descripcion",
 				"type": "String"
 			}
 		]

@@ -24,31 +24,35 @@
 		},
 		"schema": [
 			{
+				"name": "fec_servicio",
+				"type": "String"
+			},
+			{
 				"name": "cod_ruta",
 				"type": "String"
 			},
 			{
-				"name": "nombre_ruta",
+				"name": "nro_parada",
 				"type": "String"
 			},
 			{
-				"name": "origen",
+				"name": "franja",
 				"type": "String"
 			},
 			{
-				"name": "destino",
+				"name": "abordajes_manuales",
 				"type": "String"
 			},
 			{
-				"name": "fecha_desde",
+				"name": "descensos_manuales",
 				"type": "String"
 			},
 			{
-				"name": "fecha_hasta",
+				"name": "demanda_no_atendida",
 				"type": "String"
 			},
 			{
-				"name": "estado",
+				"name": "medicion",
 				"type": "String"
 			}
 		]

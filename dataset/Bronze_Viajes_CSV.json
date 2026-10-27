@@ -24,31 +24,47 @@
 		},
 		"schema": [
 			{
+				"name": "id_viaje",
+				"type": "String"
+			},
+			{
 				"name": "cod_ruta",
 				"type": "String"
 			},
 			{
-				"name": "nombre_ruta",
+				"name": "nro_bus",
 				"type": "String"
 			},
 			{
-				"name": "origen",
+				"name": "fec_servicio",
 				"type": "String"
 			},
 			{
-				"name": "destino",
+				"name": "hora_programada",
 				"type": "String"
 			},
 			{
-				"name": "fecha_desde",
+				"name": "hora_salida",
 				"type": "String"
 			},
 			{
-				"name": "fecha_hasta",
+				"name": "hora_llegada",
 				"type": "String"
 			},
 			{
-				"name": "estado",
+				"name": "pasajeros_reportados",
+				"type": "String"
+			},
+			{
+				"name": "km_recorridos",
+				"type": "String"
+			},
+			{
+				"name": "estado_viaje",
+				"type": "String"
+			},
+			{
+				"name": "tipo_metrica",
 				"type": "String"
 			}
 		]

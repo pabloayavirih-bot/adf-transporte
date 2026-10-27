@@ -5,9 +5,29 @@
 			"referenceName": "LS_SQL_DW_Transporte",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Bronze/sql"
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": [],
+		"schema": [
+			{
+				"name": "AnioFuente",
+				"type": "varchar"
+			},
+			{
+				"name": "IncidenteId",
+				"type": "varchar"
+			},
+			{
+				"name": "RutaHistoricaId",
+				"type": "varchar"
+			},
+			{
+				"name": "EsPrincipal",
+				"type": "varchar"
+			}
+		],
 		"typeProperties": {
 			"schema": "bronze",
 			"table": "IncidenteRutaAzure"

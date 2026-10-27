@@ -24,19 +24,19 @@
 		},
 		"schema": [
 			{
-				"name": "cod_ruta",
+				"name": "nro_bus",
 				"type": "String"
 			},
 			{
-				"name": "nombre_ruta",
+				"name": "placa",
 				"type": "String"
 			},
 			{
-				"name": "origen",
+				"name": "tipo_bus",
 				"type": "String"
 			},
 			{
-				"name": "destino",
+				"name": "capacidad",
 				"type": "String"
 			},
 			{

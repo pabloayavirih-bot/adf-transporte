@@ -22,31 +22,35 @@
 		},
 		"schema": [
 			{
+				"name": "fecha_servicio",
+				"type": "String"
+			},
+			{
 				"name": "cod_ruta",
 				"type": "String"
 			},
 			{
-				"name": "nombre_ruta",
+				"name": "nro_parada",
 				"type": "String"
 			},
 			{
-				"name": "origen",
+				"name": "franja",
 				"type": "String"
 			},
 			{
-				"name": "destino",
+				"name": "estimacion_abordajes",
 				"type": "String"
 			},
 			{
-				"name": "fecha_desde",
+				"name": "estimacion_descensos",
 				"type": "String"
 			},
 			{
-				"name": "fecha_hasta",
+				"name": "demanda_no_atendida",
 				"type": "String"
 			},
 			{
-				"name": "estado",
+				"name": "metodo",
 				"type": "String"
 			}
 		]
