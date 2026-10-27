@@ -1,0 +1,16 @@
+{
+	"name": "DW_Bronze_Vehiculos_SQL",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL_DW_Transporte",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "bronze",
+			"table": "VehiculosAzure"
+		}
+	}
+}
