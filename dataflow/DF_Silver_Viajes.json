@@ -1,0 +1,101 @@
+{
+	"name": "DF_Silver_Viajes",
+	"properties": {
+		"folder": {
+			"name": "Silver"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DW_Bronze_Viajes_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DW_Silver_Viajes_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          AnioFuente as string,",
+				"          ViajeId as string,",
+				"          RutaHistoricaId as string,",
+				"          VehiculoId as string,",
+				"          FechaServicio as string,",
+				"          HoraProgramada as string,",
+				"          HoraSalida as string,",
+				"          HoraLlegada as string,",
+				"          ValidacionesTarjeta as string,",
+				"          KmRecorridos as string,",
+				"          EstadoViaje as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source1 derive(ViajeId = trim(ViajeId),",
+				"          RutaHistoricaId = trim(RutaHistoricaId),",
+				"          VehiculoId = trim(VehiculoId),",
+				"          EstadoViaje = upper(trim(EstadoViaje))) ~> derivedColumn1",
+				"derivedColumn1 derive(FechaServicio = iif(locate('/', trim(FechaServicio)) > 0, toDate(trim(FechaServicio), 'dd/MM/yyyy'), toDate(trim(FechaServicio), 'yyyy-MM-dd')),",
+				"          ValidacionesTarjeta = toInteger(trim(ValidacionesTarjeta)),",
+				"          KmRecorridos = toDecimal(trim(KmRecorridos)),",
+				"          HoraProgramada = toTimestamp(concat('1970-01-01 ', trim(HoraProgramada)), 'yyyy-MM-dd HH:mm:ss'),",
+				"          HoraSalida = toTimestamp(concat('1970-01-01 ', trim(HoraSalida)), 'yyyy-MM-dd HH:mm:ss'),",
+				"          HoraLlegada = toTimestamp(concat('1970-01-01 ', trim(HoraLlegada)), 'yyyy-MM-dd HH:mm:ss')) ~> derivedColumn2",
+				"derivedColumn2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          SilverId as long,",
+				"          ViajeId as string,",
+				"          RutaHistoricaId as string,",
+				"          VehiculoId as string,",
+				"          FechaServicio as date,",
+				"          HoraProgramada as timestamp,",
+				"          HoraSalida as timestamp,",
+				"          HoraLlegada as timestamp,",
+				"          ValidacionesTarjeta as integer,",
+				"          KmRecorridos as decimal(8,1),",
+				"          EstadoViaje as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          ViajeId,",
+				"          RutaHistoricaId,",
+				"          VehiculoId,",
+				"          FechaServicio,",
+				"          HoraProgramada,",
+				"          HoraSalida,",
+				"          HoraLlegada,",
+				"          ValidacionesTarjeta,",
+				"          KmRecorridos,",
+				"          EstadoViaje",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
