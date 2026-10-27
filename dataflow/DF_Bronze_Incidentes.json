@@ -1,6 +1,9 @@
 {
 	"name": "DF_Bronze_Incidentes",
 	"properties": {
+		"folder": {
+			"name": "Bronze"
+		},
 		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
