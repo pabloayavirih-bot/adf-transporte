@@ -1,0 +1,51 @@
+{
+	"name": "DF_Bronze_Paradas",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Bronze_Paradas_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "srcParadasCSV"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Bronze_Paradas_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "sinkParadas"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          cod_ruta as string,",
+				"          nombre_ruta as string,",
+				"          origen as string,",
+				"          destino as string,",
+				"          fecha_desde as string,",
+				"          fecha_hasta as string,",
+				"          estado as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> srcParadasCSV",
+				"srcParadasCSV sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sinkParadas"
+			]
+		}
+	}
+}
