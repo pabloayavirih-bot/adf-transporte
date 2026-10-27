@@ -1,0 +1,185 @@
+{
+	"name": "DW_Bronze_Viajes_SQL",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Bronze_Viajes_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "Bronze_Viajes_XLS",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				},
+				{
+					"dataset": {
+						"referenceName": "Bronze_Viajes_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "source3"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DW_Bronze_Viajes_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "union1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          id_viaje as string,",
+				"          cod_ruta as string,",
+				"          nro_bus as string,",
+				"          fec_servicio as string,",
+				"          hora_programada as string,",
+				"          hora_salida as string,",
+				"          hora_llegada as string,",
+				"          pasajeros_reportados as string,",
+				"          km_recorridos as string,",
+				"          estado_viaje as string,",
+				"          tipo_metrica as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source(output(",
+				"          id_viaje as string,",
+				"          cod_ruta as string,",
+				"          nro_bus as string,",
+				"          fecha_servicio as string,",
+				"          hora_programada as string,",
+				"          hora_salida as string,",
+				"          hora_llegada as string,",
+				"          pasajeros_estimados as string,",
+				"          km_recorridos as string,",
+				"          estado_viaje as string,",
+				"          tipo_metrica as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source2",
+				"source(output(",
+				"          AnioFuente as integer,",
+				"          ViajeId as string,",
+				"          RutaHistoricaId as string,",
+				"          VehiculoId as string,",
+				"          FechaServicio as date,",
+				"          HoraProgramada as timestamp,",
+				"          HoraSalida as timestamp,",
+				"          HoraLlegada as timestamp,",
+				"          ValidacionesTarjeta as integer,",
+				"          KmRecorridos as decimal(8,1),",
+				"          EstadoViaje as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source3",
+				"source1 select(mapColumn(",
+				"          ViajeId = id_viaje,",
+				"          RutaHistoricaId = cod_ruta,",
+				"          VehiculoId = nro_bus,",
+				"          FechaServicio = fec_servicio,",
+				"          HoraProgramada = hora_programada,",
+				"          HoraSalida = hora_salida,",
+				"          HoraLlegada = hora_llegada,",
+				"          ValidacionesTarjeta = pasajeros_reportados,",
+				"          KmRecorridos = km_recorridos,",
+				"          EstadoViaje = estado_viaje",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 derive({AnioFuente } = substring(FechaServicio, 7, 4)) ~> derivedColumn1",
+				"source2 select(mapColumn(",
+				"          ViajeId = id_viaje,",
+				"          RutaHistoricaId = cod_ruta,",
+				"          VehiculoId = nro_bus,",
+				"          FechaServicio = fecha_servicio,",
+				"          HoraProgramada = hora_programada,",
+				"          HoraSalida = hora_salida,",
+				"          HoraLlegada = hora_llegada,",
+				"          ValidacionesTarjeta = pasajeros_estimados,",
+				"          KmRecorridos = km_recorridos,",
+				"          EstadoViaje = estado_viaje",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select2 derive({AnioFuente } = '2022') ~> derivedColumn2",
+				"source3 derive(AnioFuente = toString(AnioFuente),",
+				"          FechaServicio = toString(FechaServicio),",
+				"          HoraProgramada = toString(HoraProgramada),",
+				"          HoraSalida = toString(HoraSalida),",
+				"          HoraLlegada = toString(HoraLlegada),",
+				"          ValidacionesTarjeta = toString(ValidacionesTarjeta),",
+				"          KmRecorridos = toString(KmRecorridos)) ~> derivedColumn3",
+				"derivedColumn3, derivedColumn1, derivedColumn2 union(byName: true)~> union1",
+				"union1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          AnioFuente as string,",
+				"          ViajeId as string,",
+				"          RutaHistoricaId as string,",
+				"          VehiculoId as string,",
+				"          FechaServicio as string,",
+				"          HoraProgramada as string,",
+				"          HoraSalida as string,",
+				"          HoraLlegada as string,",
+				"          ValidacionesTarjeta as string,",
+				"          KmRecorridos as string,",
+				"          EstadoViaje as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          AnioFuente,",
+				"          ViajeId,",
+				"          RutaHistoricaId,",
+				"          VehiculoId,",
+				"          FechaServicio,",
+				"          HoraProgramada,",
+				"          HoraSalida,",
+				"          HoraLlegada,",
+				"          ValidacionesTarjeta,",
+				"          KmRecorridos,",
+				"          EstadoViaje",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}

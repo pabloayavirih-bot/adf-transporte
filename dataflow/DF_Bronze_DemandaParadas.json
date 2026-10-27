@@ -1,0 +1,170 @@
+{
+	"name": "DF_Bronze_DemandaParadas",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Bronze_DemandaParadas_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "Bronze_DemandaParadas_XLS",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				},
+				{
+					"dataset": {
+						"referenceName": "Bronze_DemandaParadas_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "source3"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DW_Bronze_DemandaParadas_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "derivedColumn3"
+				},
+				{
+					"name": "union1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          fec_servicio as string,",
+				"          cod_ruta as string,",
+				"          nro_parada as string,",
+				"          franja as string,",
+				"          abordajes_manuales as string,",
+				"          descensos_manuales as string,",
+				"          demanda_no_atendida as string,",
+				"          medicion as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source(output(",
+				"          fecha_servicio as string,",
+				"          cod_ruta as string,",
+				"          nro_parada as string,",
+				"          franja as string,",
+				"          estimacion_abordajes as string,",
+				"          estimacion_descensos as string,",
+				"          demanda_no_atendida as string,",
+				"          metodo as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source2",
+				"source(output(",
+				"          AnioFuente as integer,",
+				"          DemandaId as string,",
+				"          FechaServicio as date,",
+				"          RutaHistoricaId as string,",
+				"          ParadaHistoricaId as string,",
+				"          Franja as string,",
+				"          ValidacionesTarjeta as integer,",
+				"          Descensos as integer,",
+				"          DemandaNoAtendida as integer,",
+				"          Metodo as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source3",
+				"source1 select(mapColumn(",
+				"          FechaServicio = fec_servicio,",
+				"          RutaHistoricaId = cod_ruta,",
+				"          ParadaHistoricaId = nro_parada,",
+				"          Franja = franja,",
+				"          ValidacionesTarjeta = abordajes_manuales,",
+				"          Descensos = descensos_manuales,",
+				"          DemandaNoAtendida = demanda_no_atendida,",
+				"          Metodo = medicion",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 derive(AnioFuente = substring(FechaServicio, 7, 4)) ~> derivedColumn1",
+				"source2 select(mapColumn(",
+				"          FechaServicio = fecha_servicio,",
+				"          RutaHistoricaId = cod_ruta,",
+				"          ParadaHistoricaId = nro_parada,",
+				"          Franja = franja,",
+				"          ValidacionesTarjeta = estimacion_abordajes,",
+				"          Descensos = estimacion_descensos,",
+				"          DemandaNoAtendida = demanda_no_atendida,",
+				"          Metodo = metodo",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select2 derive(AnioFuente = '2022') ~> derivedColumn2",
+				"source3 derive(AnioFuente = toString(AnioFuente),",
+				"          FechaServicio = toString(FechaServicio),",
+				"          ValidacionesTarjeta = toString(ValidacionesTarjeta),",
+				"          Descensos = toString(Descensos),",
+				"          DemandaNoAtendida = toString(DemandaNoAtendida)) ~> derivedColumn3",
+				"derivedColumn3, derivedColumn1, derivedColumn2 union(byName: true)~> union1",
+				"union1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          AnioFuente as string,",
+				"          DemandaId as string,",
+				"          FechaServicio as string,",
+				"          RutaHistoricaId as string,",
+				"          ParadaHistoricaId as string,",
+				"          Franja as string,",
+				"          ValidacionesTarjeta as string,",
+				"          Descensos as string,",
+				"          DemandaNoAtendida as string,",
+				"          Metodo as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          AnioFuente,",
+				"          DemandaId,",
+				"          FechaServicio,",
+				"          RutaHistoricaId,",
+				"          ParadaHistoricaId,",
+				"          Franja,",
+				"          ValidacionesTarjeta,",
+				"          Descensos,",
+				"          DemandaNoAtendida,",
+				"          Metodo",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
