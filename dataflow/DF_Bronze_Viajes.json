@@ -1,5 +1,5 @@
 {
-	"name": "DW_Bronze_Viajes_SQL",
+	"name": "DF_Bronze_Viajes",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
