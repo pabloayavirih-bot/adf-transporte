@@ -10,12 +10,19 @@
 						"type": "DatasetReference"
 					},
 					"name": "srcParadasCSV"
+				},
+				{
+					"dataset": {
+						"referenceName": "Bronze_Paradas_XLS",
+						"type": "DatasetReference"
+					},
+					"name": "srcParadasXLS"
 				}
 			],
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "Bronze_Paradas_SQL",
+						"referenceName": "DW_Bronze_Paradas_SQL",
 						"type": "DatasetReference"
 					},
 					"name": "sinkParadas"
@@ -35,6 +42,18 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> srcParadasCSV",
+				"source(output(",
+				"          cod_ruta as string,",
+				"          nombre_ruta as string,",
+				"          origen as string,",
+				"          destino as string,",
+				"          fecha_desde as string,",
+				"          fecha_hasta as string,",
+				"          estado as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> srcParadasXLS",
 				"srcParadasCSV sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
