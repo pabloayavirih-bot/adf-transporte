@@ -1,0 +1,5 @@
+subscription_id    = "REEMPLAZAR_LOCALMENTE"
+client_id          = "REEMPLAZAR_LOCALMENTE"
+client_secret      = "REEMPLAZAR_LOCALMENTE"
+tenant_id          = "REEMPLAZAR_LOCALMENTE"
+sql_admin_password = "REEMPLAZAR_LOCALMENTE"
