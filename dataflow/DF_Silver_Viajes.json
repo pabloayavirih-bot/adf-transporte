@@ -54,7 +54,7 @@
 				"          RutaHistoricaId = trim(RutaHistoricaId),",
 				"          VehiculoId = trim(VehiculoId),",
 				"          EstadoViaje = upper(trim(EstadoViaje))) ~> derivedColumn1",
-				"derivedColumn1 derive(FechaServicio = iif(locate('/', trim(FechaServicio)) > 0, toDate(trim(FechaServicio), 'dd/MM/yyyy'), toDate(trim(FechaServicio), 'yyyy-MM-dd')),",
+				"derivedColumn1 derive(FechaServicio = iif(     isInteger(trim(FechaServicio)),     addDays(toDate('1899-12-30'), toInteger(trim(FechaServicio))),     iif(         locate('/', trim(FechaServicio)) > 0,         toDate(trim(FechaServicio), 'dd/MM/yyyy'),         toDate(trim(FechaServicio), 'yyyy-MM-dd')     ) ),",
 				"          ValidacionesTarjeta = toInteger(trim(ValidacionesTarjeta)),",
 				"          KmRecorridos = toDecimal(trim(KmRecorridos)),",
 				"          HoraProgramada = toTimestamp(concat('1970-01-01 ', trim(HoraProgramada)), 'yyyy-MM-dd HH:mm:ss'),",
