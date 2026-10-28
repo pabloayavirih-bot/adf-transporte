@@ -27,6 +27,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "Bronze_Paradas_XLS_2023",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
 				}
 			],
 			"sinks": [
@@ -50,6 +57,15 @@
 				},
 				{
 					"name": "union1"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "derivedColumn3"
 				}
 			],
 			"scriptLines": [
@@ -95,6 +111,19 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> source1",
+				"source(output(",
+				"          nro_parada as string,",
+				"          nombre_parada as string,",
+				"          zona as string,",
+				"          latitud as string,",
+				"          longitud as string,",
+				"          fecha_desde as string,",
+				"          fecha_hasta as string,",
+				"          estado as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source2",
 				"srcParadasCSV select(mapColumn(",
 				"          CodigoPublicado = nro_parada,",
 				"          NombreParada = nombre_parada,",
@@ -124,7 +153,21 @@
 				"          Longitud = toString(Longitud),",
 				"          VigenciaDesde = toString(VigenciaDesde),",
 				"          VigenciaHasta = toString(VigenciaHasta)) ~> derivedColumn1",
-				"derivedColumn1, select1, select2 union(byName: true)~> union1",
+				"derivedColumn1, select1, derivedColumn3, derivedColumn2 union(byName: true)~> union1",
+				"source2 select(mapColumn(",
+				"          ParadaHistoricaId = nro_parada,",
+				"          NombreParada = nombre_parada,",
+				"          Zona = zona,",
+				"          Latitud = latitud,",
+				"          Longitud = longitud,",
+				"          VigenciaDesde = fecha_desde,",
+				"          VigenciaHasta = fecha_hasta,",
+				"          Estado = estado",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"select3 derive(AnioFuente = '2023') ~> derivedColumn2",
+				"select2 derive(AnioFuente = '2022') ~> derivedColumn3",
 				"union1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",

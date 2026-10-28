@@ -27,6 +27,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "source3"
+				},
+				{
+					"dataset": {
+						"referenceName": "Bronze_Incidentes_XLS_2023",
+						"type": "DatasetReference"
+					},
+					"name": "source4"
 				}
 			],
 			"sinks": [
@@ -62,6 +69,15 @@
 				},
 				{
 					"name": "union1"
+				},
+				{
+					"name": "select5"
+				},
+				{
+					"name": "derivedColumn4"
+				},
+				{
+					"name": "select6"
 				}
 			],
 			"scriptLines": [
@@ -112,6 +128,22 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> source3",
+				"source(output(",
+				"          id_incidente as string,",
+				"          tipo as string,",
+				"          severidad as string,",
+				"          fecha_inicio as string,",
+				"          hora_inicio as string,",
+				"          fecha_fin as string,",
+				"          hora_fin as string,",
+				"          fecha_registro as string,",
+				"          rutas_afectadas as string,",
+				"          vehiculo_afectado as string,",
+				"          descripcion as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source4",
 				"source1 select(mapColumn(",
 				"          IncidenteId = id_incidente,",
 				"          TipoIncidente = tipo,",
@@ -127,7 +159,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 derive(AnioFuente = substring(fecha_inicio, 7, 4),",
+				"select1 derive(AnioFuente = iif(locate('/', trim(fecha_inicio)) > 0, substring(trim(fecha_inicio), 7, 4), substring(trim(fecha_inicio), 1, 4)),",
 				"          {FechaHoraInicio } = concat(fecha_inicio, ' ', hora_inicio),",
 				"          FechaHoraFin = concat(fecha_fin, ' ', hora_fin),",
 				"          FechaHoraRegistro = fecha_registro) ~> derivedColumn1",
@@ -180,7 +212,39 @@
 				"          FechaHoraInicio = toString(FechaHoraInicio),",
 				"          FechaHoraFin = toString(FechaHoraFin),",
 				"          FechaHoraRegistro = toString(FechaHoraRegistro)) ~> derivedColumn3",
-				"derivedColumn3, select4, select2 union(byName: true)~> union1",
+				"derivedColumn3, select4, select2, select6 union(byName: true)~> union1",
+				"source4 select(mapColumn(",
+				"          IncidenteId = id_incidente,",
+				"          TipoIncidente = tipo,",
+				"          Severidad = severidad,",
+				"          fecha_inicio,",
+				"          hora_inicio,",
+				"          fecha_fin,",
+				"          hora_fin,",
+				"          fecha_registro,",
+				"          rutas_afectadas,",
+				"          VehiculoId = vehiculo_afectado,",
+				"          Descripcion = descripcion",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select5",
+				"select5 derive(AnioFuente = '2023',",
+				"          FechaHoraInicio = concat(fecha_inicio, ' ', hora_inicio),",
+				"          FechaHoraFin = concat(fecha_fin, ' ', hora_fin),",
+				"          FechaHoraRegistro = fecha_registro) ~> derivedColumn4",
+				"derivedColumn4 select(mapColumn(",
+				"          IncidenteId,",
+				"          TipoIncidente,",
+				"          Severidad,",
+				"          VehiculoId,",
+				"          Descripcion,",
+				"          AnioFuente,",
+				"          FechaHoraInicio,",
+				"          FechaHoraFin,",
+				"          FechaHoraRegistro",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select6",
 				"union1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",

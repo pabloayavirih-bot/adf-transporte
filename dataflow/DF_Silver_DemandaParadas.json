@@ -54,7 +54,7 @@
 				"          ParadaHistoricaId = trim(ParadaHistoricaId),",
 				"          Franja = upper(trim(Franja)),",
 				"          Metodo = upper(trim(Metodo))) ~> derivedColumn1",
-				"derivedColumn1 derive(FechaServicio = iif(locate('/', trim(FechaServicio)) > 0, toDate(trim(FechaServicio), 'dd/MM/yyyy'), toDate(trim(FechaServicio), 'yyyy-MM-dd')),",
+				"derivedColumn1 derive(FechaServicio = iif(     isInteger(trim(FechaServicio)),     addDays(toDate('1899-12-30'), toInteger(trim(FechaServicio))),     iif(         locate('/', trim(FechaServicio)) > 0,         toDate(trim(FechaServicio), 'dd/MM/yyyy'),         toDate(trim(FechaServicio))     ) ),",
 				"          ValidacionesTarjeta = toInteger(trim(ValidacionesTarjeta)),",
 				"          Descensos = toInteger(trim(Descensos)),",
 				"          DemandaNoAtendida = toInteger(trim(DemandaNoAtendida))) ~> derivedColumn2",

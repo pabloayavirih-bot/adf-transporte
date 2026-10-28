@@ -27,6 +27,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "source3"
+				},
+				{
+					"dataset": {
+						"referenceName": "Bronze_Viajes_XLS_2023",
+						"type": "DatasetReference"
+					},
+					"name": "source4"
 				}
 			],
 			"sinks": [
@@ -56,6 +63,12 @@
 				},
 				{
 					"name": "union1"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "derivedColumn4"
 				}
 			],
 			"scriptLines": [
@@ -108,6 +121,22 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> source3",
+				"source(output(",
+				"          id_viaje as string,",
+				"          cod_ruta as string,",
+				"          nro_bus as string,",
+				"          fecha_servicio as string,",
+				"          hora_programada as string,",
+				"          hora_salida as string,",
+				"          hora_llegada as string,",
+				"          pasajeros_estimados as string,",
+				"          km_recorridos as string,",
+				"          estado_viaje as string,",
+				"          tipo_metrica as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source4",
 				"source1 select(mapColumn(",
 				"          ViajeId = id_viaje,",
 				"          RutaHistoricaId = cod_ruta,",
@@ -131,9 +160,9 @@
 				"          HoraProgramada = hora_programada,",
 				"          HoraSalida = hora_salida,",
 				"          HoraLlegada = hora_llegada,",
-				"          ValidacionesTarjeta = pasajeros_estimados,",
 				"          KmRecorridos = km_recorridos,",
-				"          EstadoViaje = estado_viaje",
+				"          EstadoViaje = estado_viaje,",
+				"          tipo_metrica",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select2",
@@ -145,7 +174,21 @@
 				"          HoraLlegada = toString(HoraLlegada),",
 				"          ValidacionesTarjeta = toString(ValidacionesTarjeta),",
 				"          KmRecorridos = toString(KmRecorridos)) ~> derivedColumn3",
-				"derivedColumn3, derivedColumn1, derivedColumn2 union(byName: true)~> union1",
+				"derivedColumn3, derivedColumn1, derivedColumn2, derivedColumn4 union(byName: true)~> union1",
+				"source4 select(mapColumn(",
+				"          ViajeId = id_viaje,",
+				"          ViajeId = cod_ruta,",
+				"          VehiculoId = nro_bus,",
+				"          FechaServicio = fecha_servicio,",
+				"          HoraProgramada = hora_programada,",
+				"          HoraSalida = hora_salida,",
+				"          HoraLlegada = hora_llegada,",
+				"          KmRecorridos = km_recorridos,",
+				"          EstadoViaje = estado_viaje",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"select3 derive(AnioFuente = '2023') ~> derivedColumn4",
 				"union1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",

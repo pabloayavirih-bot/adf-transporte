@@ -27,6 +27,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "source3"
+				},
+				{
+					"dataset": {
+						"referenceName": "Bronze_Rutas_XLS_2023",
+						"type": "DatasetReference"
+					},
+					"name": "source4"
 				}
 			],
 			"sinks": [
@@ -56,6 +63,12 @@
 				},
 				{
 					"name": "union1"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "derivedColumn4"
 				}
 			],
 			"scriptLines": [
@@ -98,6 +111,18 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> source3",
+				"source(output(",
+				"          cod_ruta as string,",
+				"          nombre_ruta as string,",
+				"          origen as string,",
+				"          destino as string,",
+				"          fecha_desde as string,",
+				"          fecha_hasta as string,",
+				"          estado as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source4",
 				"source1 select(mapColumn(",
 				"          CodigoRuta = cod_ruta,",
 				"          NombreRuta = nombre_ruta,",
@@ -125,7 +150,19 @@
 				"source3 derive(AnioFuente = toString(AnioFuente),",
 				"          VigenciaDesde = toString(VigenciaDesde),",
 				"          VigenciaHasta = toString(VigenciaHasta)) ~> derivedColumn3",
-				"derivedColumn3, derivedColumn1, derivedColumn2 union(byName: true)~> union1",
+				"derivedColumn3, derivedColumn1, derivedColumn2, derivedColumn4 union(byName: true)~> union1",
+				"source4 select(mapColumn(",
+				"          CodigoRuta = cod_ruta,",
+				"          NombreRuta = nombre_ruta,",
+				"          Origen = origen,",
+				"          Destino = destino,",
+				"          VigenciaDesde = fecha_desde,",
+				"          VigenciaHasta = fecha_hasta,",
+				"          Estado = estado",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"select3 derive(AnioFuente = '2023') ~> derivedColumn4",
 				"union1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
@@ -152,11 +189,11 @@
 				"          RutaHistoricaId,",
 				"          CodigoRuta,",
 				"          NombreRuta,",
-				"          Origen,",
-				"          Destino,",
+				"          Origen = union1@Origen,",
+				"          Destino = union1@Destino,",
 				"          VigenciaDesde,",
 				"          VigenciaHasta,",
-				"          Estado",
+				"          Estado = union1@Estado",
 				"     )) ~> sink1"
 			]
 		}
