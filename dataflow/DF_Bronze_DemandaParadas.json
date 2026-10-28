@@ -113,7 +113,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 derive(AnioFuente = substring(FechaServicio, 7, 4)) ~> derivedColumn1",
+				"select1 derive(AnioFuente = iif(locate('/', trim(FechaServicio)) > 0, substring(trim(FechaServicio), 7, 4), substring(trim(FechaServicio), 1, 4))) ~> derivedColumn1",
 				"source2 select(mapColumn(",
 				"          FechaServicio = fecha_servicio,",
 				"          RutaHistoricaId = cod_ruta,",
